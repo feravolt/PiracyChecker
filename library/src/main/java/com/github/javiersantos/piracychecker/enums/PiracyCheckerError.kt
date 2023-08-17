@@ -9,9 +9,10 @@ enum class PiracyCheckerError(private val text: String) {
     PIRATE_APP_INSTALLED("At least one pirate app has been detected on device."),
     BLOCK_PIRATE_APP(
         "At least one pirate app has been detected and the app must be reinstalled when all " +
-            "unauthorized apps are uninstalled."),
+                "unauthorized apps are uninstalled."
+    ),
     THIRD_PARTY_STORE_INSTALLED("At least one third-party store has been detected on device."),
-    
+
     // Other errors
     INVALID_PACKAGE_NAME("Application package name is invalid."),
     NON_MATCHING_UID("Application UID doesn\'t match."),
@@ -19,14 +20,15 @@ enum class PiracyCheckerError(private val text: String) {
     CHECK_IN_PROGRESS("License check is in progress."),
     INVALID_PUBLIC_KEY("Application public key is invalid."),
     MISSING_PERMISSION(
-        "Application misses the \'com.android.vending.CHECK_LICENSE\' " + "permission."),
+        "Application misses the \'com.android.vending.CHECK_LICENSE\' " + "permission."
+    ),
     UNKNOWN("Unknown error.");
-    
+
     /* (non-Javadoc)
      * @see java.lang.Enum#toString()
      */
     override fun toString(): String = text
-    
+
     companion object {
         fun getCheckerErrorFromCode(errorCode: Int): PiracyCheckerError = when (errorCode) {
             1 -> INVALID_PACKAGE_NAME

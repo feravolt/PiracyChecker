@@ -1,3 +1,3 @@
 package com.github.javiersantos.piracychecker.enums
 
-enum class Display { DIALOG, ACTIVITY }
+enum class Display { DIALOG }

@@ -19,7 +19,7 @@ package com.github.javiersantos.licensing;
 import com.github.javiersantos.licensing.util.Base64;
 import com.github.javiersantos.licensing.util.Base64DecoderException;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.spec.KeySpec;
 
@@ -36,23 +36,19 @@ import javax.crypto.spec.SecretKeySpec;
  * An Obfuscator that uses AES to encrypt data.
  */
 public class AESObfuscator implements Obfuscator {
-    private static final String UTF8 = "UTF-8";
     private static final String KEYGEN_ALGORITHM = "PBEWITHSHAAND256BITAES-CBC-BC";
     private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final byte[] IV =
             {16, 74, 71, -80, 32, 101, -47, 72, 117, -14, 0, -29, 70, 65, -12, 74};
     private static final String header = "com.github.javiersantos.licensing.AESObfuscator-1|";
 
-    private Cipher mEncryptor;
-    private Cipher mDecryptor;
+    private final Cipher mEncryptor;
+    private final Cipher mDecryptor;
 
     /**
-     * @param salt
-     *         an array of random bytes to use for each (un)obfuscation
-     * @param applicationId
-     *         application identifier, e.g. the package name
-     * @param deviceId
-     *         device identifier. Use as many sources as possible to create this unique identifier.
+     * @param salt          an array of random bytes to use for each (un)obfuscation
+     * @param applicationId application identifier, e.g. the package name
+     * @param deviceId      device identifier. Use as many sources as possible to create this unique identifier.
      */
     public AESObfuscator(byte[] salt, String applicationId, String deviceId) {
         try {
@@ -77,8 +73,8 @@ public class AESObfuscator implements Obfuscator {
         }
         try {
             // Header is appended as an integrity check
-            return Base64.encode(mEncryptor.doFinal((header + key + original).getBytes(UTF8)));
-        } catch (UnsupportedEncodingException | GeneralSecurityException e) {
+            return Base64.encode(mEncryptor.doFinal((header + key + original).getBytes(StandardCharsets.UTF_8)));
+        } catch (GeneralSecurityException e) {
             throw new RuntimeException("Invalid environment", e);
         }
     }
@@ -88,19 +84,17 @@ public class AESObfuscator implements Obfuscator {
             return null;
         }
         try {
-            String result = new String(mDecryptor.doFinal(Base64.decode(obfuscated)), UTF8);
+            String result = new String(mDecryptor.doFinal(Base64.decode(obfuscated)), StandardCharsets.UTF_8);
             // Check for presence of header. This serves as a final integrity check, for cases
             // where the block size is correct during decryption.
             int headerIndex = result.indexOf(header + key);
             if (headerIndex != 0) {
                 throw new ValidationException("Header not found (invalid data or key)" + ":" +
-                                                      obfuscated);
+                        obfuscated);
             }
-            return result.substring(header.length() + key.length(), result.length());
+            return result.substring(header.length() + key.length());
         } catch (Base64DecoderException | IllegalBlockSizeException | BadPaddingException e) {
             throw new ValidationException(e.getMessage() + ":" + obfuscated);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Invalid environment", e);
         }
     }
 }

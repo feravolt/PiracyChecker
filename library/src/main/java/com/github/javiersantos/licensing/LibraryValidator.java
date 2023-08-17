@@ -79,14 +79,10 @@ class LibraryValidator {
     /**
      * Verifies the response from server and calls appropriate callback method.
      *
-     * @param publicKey
-     *         public key associated with the developer account
-     * @param responseCode
-     *         server response code
-     * @param signedData
-     *         signed data from server
-     * @param signature
-     *         server signature
+     * @param publicKey    public key associated with the developer account
+     * @param responseCode server response code
+     * @param signedData   signed data from server
+     * @param signature    server signature
      */
     public void check(PublicKey publicKey, int responseCode, String signedData, Calendar calendar,
                       String signature) {
@@ -171,38 +167,33 @@ class LibraryValidator {
         }
 
         switch (responseCode) {
-            case LICENSED:
-            case LICENSED_OLD_KEY:
+            case LICENSED, LICENSED_OLD_KEY -> {
                 int limiterResponse = mDeviceLimiter.isDeviceAllowed(userId);
                 handleResponse(limiterResponse, data);
-                break;
-            case NOT_LICENSED:
-                handleResponse(Policy.NOT_LICENSED, data);
-                break;
-            case ERROR_CONTACTING_SERVER:
+            }
+            case NOT_LICENSED -> handleResponse(Policy.NOT_LICENSED, data);
+            case ERROR_CONTACTING_SERVER -> {
                 Log.w(TAG, "Error contacting licensing server.");
-                handleResponse(Policy.RETRY, data);
-                break;
-            case ERROR_SERVER_FAILURE:
+                handleResponse(Policy.RETRY, null);
+            }
+            case ERROR_SERVER_FAILURE -> {
                 Log.w(TAG, "An error has occurred on the licensing server.");
-                handleResponse(Policy.RETRY, data);
-                break;
-            case ERROR_OVER_QUOTA:
+                handleResponse(Policy.RETRY, null);
+            }
+            case ERROR_OVER_QUOTA -> {
                 Log.w(TAG, "Licensing server is refusing to talk to this device, over quota.");
-                handleResponse(Policy.RETRY, data);
-                break;
-            case ERROR_INVALID_PACKAGE_NAME:
-                handleApplicationError(LibraryCheckerCallback.ERROR_INVALID_PACKAGE_NAME);
-                break;
-            case ERROR_NON_MATCHING_UID:
-                handleApplicationError(LibraryCheckerCallback.ERROR_NON_MATCHING_UID);
-                break;
-            case ERROR_NOT_MARKET_MANAGED:
-                handleApplicationError(LibraryCheckerCallback.ERROR_NOT_MARKET_MANAGED);
-                break;
-            default:
+                handleResponse(Policy.RETRY, null);
+            }
+            case ERROR_INVALID_PACKAGE_NAME ->
+                    handleApplicationError(LibraryCheckerCallback.ERROR_INVALID_PACKAGE_NAME);
+            case ERROR_NON_MATCHING_UID ->
+                    handleApplicationError(LibraryCheckerCallback.ERROR_NON_MATCHING_UID);
+            case ERROR_NOT_MARKET_MANAGED ->
+                    handleApplicationError(LibraryCheckerCallback.ERROR_NOT_MARKET_MANAGED);
+            default -> {
                 Log.e(TAG, "Unknown response code for license check.");
                 handleInvalidResponse();
+            }
         }
     }
 

@@ -28,15 +28,14 @@ package com.github.javiersantos.licensing;
  * most 10 different devices in a week (for example). We recommend not being too restrictive because
  * a user might legitimately have multiple devices or be in the process of changing phones. This
  * will catch egregious violations of multiple people sharing one license.
+ * @noinspection SameReturnValue
  */
 public interface DeviceLimiter {
 
     /**
      * Checks if this device is allowed to use the given user's license.
      *
-     * @param userId
-     *         the user whose license the server responded with
-     *
+     * @param userId the user whose license the server responded with
      * @return LICENSED if the device is allowed, NOT_LICENSED if not, RETRY if an error occurs
      */
     int isDeviceAllowed(String userId);

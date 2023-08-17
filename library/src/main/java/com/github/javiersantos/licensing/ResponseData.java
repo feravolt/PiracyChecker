@@ -18,6 +18,8 @@ package com.github.javiersantos.licensing;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.regex.Pattern;
 
 /**
@@ -39,13 +41,10 @@ public class ResponseData {
     /**
      * Parses response string into ResponseData.
      *
-     * @param responseData
-     *         response data string
-     *
+     * @param responseData response data string
      * @return ResponseData object
-     *
-     * @throws IllegalArgumentException
-     *         upon parsing error
+     * @throws IllegalArgumentException upon parsing error
+     * @noinspection ResultOfMethodCallIgnored
      */
     public static ResponseData parse(String responseData) {
         // Must parse out main response data and response-specific data.
@@ -56,7 +55,8 @@ public class ResponseData {
             extraData = "";
         } else {
             mainData = responseData.substring(0, index);
-            extraData = index >= responseData.length() ? "" : responseData.substring(index + 1);
+            responseData.length();
+            extraData = responseData.substring(index + 1);
         }
 
         String[] fields = TextUtils.split(mainData, Pattern.quote("|"));
@@ -77,6 +77,7 @@ public class ResponseData {
         return data;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return TextUtils.join("|", new Object[]{

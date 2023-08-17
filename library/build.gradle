@@ -1,34 +1,50 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.javiersantos'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    compileSdk 34
+    buildToolsVersion = "34.0.0"
+    namespace = "com.github.javiersantos"
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 128
-        versionName "1.2.8"
+        minSdkVersion 23
+        targetSdkVersion 34
+        versionCode 129
+        versionName '1.2.9'
         consumerProguardFiles 'proguard-rules.pro'
+        multiDexEnabled false
+        testFunctionalTest false
+        testHandleProfiling false
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             consumerProguardFiles 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/aidl']
+        }
+    }
+    kotlinOptions.jvmTarget = "17"
+    ndkVersion '26.0.10404224 rc1'
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.preference:preference:1.1.1'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'com.google.android.material:material:1.11.0-alpha02'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
 }
 
 repositories {

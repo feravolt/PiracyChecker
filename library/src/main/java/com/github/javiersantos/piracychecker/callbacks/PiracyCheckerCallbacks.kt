@@ -14,7 +14,7 @@ interface DoNotAllowCallback {
     @Deprecated("dontAllow has been deprecated in favor of doNotAllow", ReplaceWith("doNotAllow"))
     fun dontAllow(error: PiracyCheckerError, app: PirateApp?) =
         doNotAllow(error, app)
-    
+
     /**
      * Called if the app is not valid or the user is using an unlicensed version. Check errors at
      * [PiracyCheckerError].
@@ -43,5 +43,5 @@ interface OnErrorCallback {
 }
 
 abstract class PiracyCheckerCallback : AllowCallback,
-                                       DoNotAllowCallback,
-                                       OnErrorCallback
+    DoNotAllowCallback,
+    OnErrorCallback

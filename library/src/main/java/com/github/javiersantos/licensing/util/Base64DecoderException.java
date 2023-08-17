@@ -14,12 +14,15 @@
 
 package com.github.javiersantos.licensing.util;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when encountering an invalid Base64 input character.
  *
  * @author nelson
  */
 public class Base64DecoderException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public Base64DecoderException() {

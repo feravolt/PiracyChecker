@@ -37,10 +37,8 @@ public class StrictPolicy implements Policy {
      * Process a new response from the license server. Since we aren't performing any caching, this
      * equates to reading the LicenseResponse. Any ResponseData provided is ignored.
      *
-     * @param response
-     *         the result from validating the server response
-     * @param rawData
-     *         the raw server response data
+     * @param response the result from validating the server response
+     * @param rawData  the raw server response data
      */
     public void processServerResponse(int response, ResponseData rawData) {
         mLastResponse = response;

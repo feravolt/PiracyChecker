@@ -10,7 +10,7 @@ import java.util.Random
 internal object SaltUtils {
     private const val KEY_SALT = "salty-salt"
     private var mSalt: ByteArray? = null
-    
+
     private val saltString: String
         get() {
             val sb = StringBuilder()
@@ -22,7 +22,7 @@ internal object SaltUtils {
             }
             return sb.toString()
         }
-    
+
     private fun generateSalt(context: Context?) {
         mSalt = ByteArray(20)
         val randomGenerator = Random()
@@ -35,7 +35,7 @@ internal object SaltUtils {
         PreferenceManager.getDefaultSharedPreferences(context)
             .edit().putString(KEY_SALT, saltString).apply()
     }
-    
+
     private fun bytesFromString(string: String): ByteArray {
         val split = string.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val data = ByteArray(split.size)
@@ -44,7 +44,7 @@ internal object SaltUtils {
         }
         return data
     }
-    
+
     fun getSalt(context: Context?): ByteArray? {
         if (mSalt == null) {
             mSalt = context?.let {

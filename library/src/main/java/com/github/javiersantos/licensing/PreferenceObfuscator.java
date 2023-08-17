@@ -34,10 +34,8 @@ public class PreferenceObfuscator {
     /**
      * Constructor.
      *
-     * @param sp
-     *         A SharedPreferences instance provided by the system.
-     * @param o
-     *         The Obfuscator to use when reading or writing data.
+     * @param sp A SharedPreferences instance provided by the system.
+     * @param o  The Obfuscator to use when reading or writing data.
      */
     public PreferenceObfuscator(SharedPreferences sp, Obfuscator o) {
         mPreferences = sp;

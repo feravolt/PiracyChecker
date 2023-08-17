@@ -52,20 +52,17 @@ public class ServerManagedPolicy implements Policy {
     private static final String DEFAULT_RETRY_COUNT = "0";
 
     private static final long MILLIS_PER_MINUTE = 60 * 1000;
-
+    private final PreferenceObfuscator mPreferences;
     private long mValidityTimestamp;
     private long mRetryUntil;
     private long mMaxRetries;
     private long mRetryCount;
     private long mLastResponseTime = 0;
     private int mLastResponse;
-    private PreferenceObfuscator mPreferences;
 
     /**
-     * @param context
-     *         The context for the current application
-     * @param obfuscator
-     *         An obfuscator to be used with preferences.
+     * @param context    The context for the current application
+     * @param obfuscator An obfuscator to be used with preferences.
      */
     public ServerManagedPolicy(Context context, Obfuscator obfuscator) {
         // Import old values
@@ -74,7 +71,7 @@ public class ServerManagedPolicy implements Policy {
         mLastResponse = Integer.parseInt(
                 mPreferences.getString(PREF_LAST_RESPONSE, Integer.toString(Policy.RETRY)));
         mValidityTimestamp = Long.parseLong(mPreferences.getString(PREF_VALIDITY_TIMESTAMP,
-                                                                   DEFAULT_VALIDITY_TIMESTAMP));
+                DEFAULT_VALIDITY_TIMESTAMP));
         mRetryUntil = Long.parseLong(mPreferences.getString(PREF_RETRY_UNTIL, DEFAULT_RETRY_UNTIL));
         mMaxRetries = Long.parseLong(mPreferences.getString(PREF_MAX_RETRIES, DEFAULT_MAX_RETRIES));
         mRetryCount = Long.parseLong(mPreferences.getString(PREF_RETRY_COUNT, DEFAULT_RETRY_COUNT));
@@ -87,10 +84,8 @@ public class ServerManagedPolicy implements Policy {
      * client should ignore retry errors until <li>GR: the number of retry errors that the client
      * should ignore </ul>
      *
-     * @param response
-     *         the result from validating the server response
-     * @param rawData
-     *         the raw server response data
+     * @param response the result from validating the server response
+     * @param rawData  the raw server response data
      */
     public void processServerResponse(int response, ResponseData rawData) {
 
@@ -123,8 +118,7 @@ public class ServerManagedPolicy implements Policy {
      * Set the last license response received from the server and add to preferences. You must
      * manually call PreferenceObfuscator.commit() to commit these changes to disk.
      *
-     * @param l
-     *         the response
+     * @param l the response
      */
     private void setLastResponse(int l) {
         mLastResponseTime = System.currentTimeMillis();
@@ -140,8 +134,7 @@ public class ServerManagedPolicy implements Policy {
      * Set the current retry count and add to preferences. You must manually call
      * PreferenceObfuscator.commit() to commit these changes to disk.
      *
-     * @param c
-     *         the new retry count
+     * @param c the new retry count
      */
     private void setRetryCount(long c) {
         mRetryCount = c;
@@ -156,11 +149,10 @@ public class ServerManagedPolicy implements Policy {
      * Set the last validity timestamp (VT) received from the server and add to preferences. You
      * must manually call PreferenceObfuscator.commit() to commit these changes to disk.
      *
-     * @param validityTimestamp
-     *         the VT string received
+     * @param validityTimestamp the VT string received
      */
     private void setValidityTimestamp(String validityTimestamp) {
-        Long lValidityTimestamp;
+        long lValidityTimestamp;
         try {
             lValidityTimestamp = Long.parseLong(validityTimestamp);
         } catch (NumberFormatException e) {
@@ -182,11 +174,10 @@ public class ServerManagedPolicy implements Policy {
      * Set the retry until timestamp (GT) received from the server and add to preferences. You must
      * manually call PreferenceObfuscator.commit() to commit these changes to disk.
      *
-     * @param retryUntil
-     *         the GT string received
+     * @param retryUntil the GT string received
      */
     private void setRetryUntil(String retryUntil) {
-        Long lRetryUntil;
+        long lRetryUntil;
         try {
             lRetryUntil = Long.parseLong(retryUntil);
         } catch (NumberFormatException e) {
@@ -208,11 +199,10 @@ public class ServerManagedPolicy implements Policy {
      * Set the max retries value (GR) as received from the server and add to preferences. You must
      * manually call PreferenceObfuscator.commit() to commit these changes to disk.
      *
-     * @param maxRetries
-     *         the GR string received
+     * @param maxRetries the GR string received
      */
     private void setMaxRetries(String maxRetries) {
-        Long lMaxRetries;
+        long lMaxRetries;
         try {
             lMaxRetries = Long.parseLong(maxRetries);
         } catch (NumberFormatException e) {
@@ -237,10 +227,8 @@ public class ServerManagedPolicy implements Policy {
         long ts = System.currentTimeMillis();
         if (mLastResponse == Policy.LICENSED) {
             // Check if the LICENSED response occurred within the validity timeout.
-            if (ts <= mValidityTimestamp) {
-                // Cached LICENSED response is still valid.
-                return true;
-            }
+            // Cached LICENSED response is still valid.
+            return ts <= mValidityTimestamp;
         } else if (mLastResponse == Policy.RETRY &&
                 ts < mLastResponseTime + MILLIS_PER_MINUTE) {
             // Only allow access if we are within the retry period or we haven't used up our
